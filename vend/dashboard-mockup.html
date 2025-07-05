@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Administrativo - Vendelo</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary-color: #64748b;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --info-color: #06b6d4;
+      --light-bg: #f8fafc;
+      --dark-bg: #1e293b;
+      --border-color: #e2e8f0;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--light-bg);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* Sidebar Modern */
+    .sidebar {
+      min-height: 100vh;
+      background: var(--dark-bg);
+      color: #fff;
+      box-shadow: var(--shadow-xl);
+      position: fixed;
+      width: 280px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sidebar .nav-link {
+      color: #94a3b8;
+      padding: 12px 24px;
+      margin: 4px 16px;
+      border-radius: 12px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .sidebar .nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      transform: translateX(4px);
+    }
+
+    .sidebar .nav-link.active {
+      background: var(--primary-color);
+      color: #fff;
+      box-shadow: var(--shadow-md);
+    }
+
+    .brand {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      padding: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 16px;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 280px;
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .page-header {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+    }
+
+    .page-title {
+      font-size: 1.875rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+      color: #64748b;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    /* Cards */
+    .card {
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      background: #fff;
+      border-bottom: 1px solid var(--border-color);
+      padding: 20px 24px;
+      font-weight: 700;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-body {
+      padding: 24px;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .stats-card {
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .stats-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+
+    .stats-card.primary {
+      border-left: 4px solid var(--primary-color);
+    }
+
+    .stats-card.success {
+      border-left: 4px solid var(--success-color);
+    }
+
+    .stats-card.warning {
+      border-left: 4px solid var(--warning-color);
+    }
+
+    .stats-card.danger {
+      border-left: 4px solid var(--danger-color);
+    }
+
+    .stats-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .stats-label {
+      color: #64748b;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .stats-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+    }
+
+    .stats-icon.primary {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary-color);
+    }
+
+    .stats-icon.success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success-color);
+    }
+
+    .stats-icon.warning {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning-color);
+    }
+
+    .stats-icon.danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger-color);
+    }
+
+    /* Buttons */
+    .btn-modern {
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-weight: 500;
+      font-size: 0.875rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-modern:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary {
+      background: var(--primary-color);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-success {
+      background: var(--success-color);
+      color: #fff;
+    }
+
+    .btn-warning {
+      background: var(--warning-color);
+      color: #fff;
+    }
+
+    .btn-danger {
+      background: var(--danger-color);
+      color: #fff;
+    }
+
+    .btn-outline-primary {
+      background: transparent;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+    }
+
+    .btn-outline-primary:hover {
+      background: var(--primary-color);
+      color: #fff;
+    }
+
+    /* Tables */
+    .table-container {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+    }
+
+    .table {
+      margin: 0;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    .table thead {
+      background: #f8fafc;
+    }
+
+    .table th {
+      padding: 16px 20px;
+      text-align: left;
+      font-weight: 700;
+      color: #1e293b;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.875rem;
+    }
+
+    .table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      color: #334155;
+      font-weight: 500;
+    }
+
+    .table tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    /* Badges */
+    .badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+      color: #fff !important;
+    }
+
+    .bg-primary {
+      background: #4338ca !important;
+    }
+
+    .bg-success {
+      background: #047857 !important;
+    }
+
+    .bg-warning {
+      background: #d97706 !important;
+    }
+
+    .bg-danger {
+      background: #dc2626 !important;
+    }
+
+    .bg-info {
+      background: #0891b2 !important;
+    }
+
+    .bg-secondary {
+      background: #475569 !important;
+    }
+
+    /* Search and Actions */
+    .actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      gap: 16px;
+    }
+
+    .search-container {
+      position: relative;
+      max-width: 320px;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 12px 16px 12px 44px;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      font-size: 0.875rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: #fff;
+    }
+
+    .search-box:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        position: relative;
+      }
+      .main-content {
+        margin-left: 0;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .actions-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+
+    /* View transitions */
+    .view-content {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .sidebar-bottom {
+      position: relative;
+      width: 100%;
+      padding: 16px 0 8px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .dashboards-toggle {
+      background: #334155;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 18px;
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      transition: background 0.2s;
+      position: relative;
+      z-index: 2010;
+    }
+    .dashboards-toggle:hover {
+      background: #6366f1;
+      color: #fff;
+    }
+
+    .dashboards-list {
+      position: absolute;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%) scaleY(0);
+      transform-origin: bottom;
+      background: #fff;
+      color: #1e293b;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px 0 rgba(31,41,55,0.18);
+      min-width: 240px;
+      padding: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      z-index: 2000;
+    }
+    .dashboards-list.open {
+      transform: translateX(-50%) scaleY(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .dashboards-list::before {
+      content: "";
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 8px 8px 0 8px;
+      border-style: solid;
+      border-color: #fff transparent transparent transparent;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
+      z-index: 2001;
+    }
+    .dashboards-list-title {
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 18px 24px 10px 24px;
+      color: #334155;
+    }
+    .dashboards-list ul {
+      list-style: none;
+      margin: 0;
+      padding: 0 0 10px 0;
+    }
+    .dashboards-list li {
+      padding: 12px 24px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background 0.18s;
+      font-weight: 500;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .dashboards-list li:last-child {
+      border-bottom: none;
+    }
+    .dashboards-list li:hover {
+      background: #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="brand">VENDELO</div>
+    <ul class="nav flex-column">
+      <li class="nav-item"><a class="nav-link active" href="#" data-view="dashboard"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" data-view="usuarios"><i class="fas fa-users me-2"></i>Usuarios</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" data-view="vendedores"><i class="fas fa-user-tie me-2"></i>Vendedores</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" data-view="distribuidores"><i class="fas fa-truck me-2"></i>Distribuidores</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" data-view="comisiones"><i class="fas fa-percentage me-2"></i>Comisiones</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" data-view="productos"><i class="fas fa-box me-2"></i>Productos</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" data-view="categorias"><i class="fas fa-tags me-2"></i>Categorías</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" data-view="reclamos"><i class="fas fa-exclamation-triangle me-2"></i>Reclamos</a></li>
+    </ul>
+    <div class="sidebar-bottom">
+      <button class="dashboards-toggle">
+        <i class="fas fa-chart-bar"></i>
+        Otros Dashboards
+      </button>
+      <div class="dashboards-list">
+        <div class="dashboards-list-title">Otros Dashboards</div>
+        <ul>
+          <li><a href="dashboard-mockup.html" class="dropdown-dashboard-link active" style="pointer-events:none;opacity:0.6;">Administrador</a></li>
+          <li><a href="dashboard-distribuidor.html" class="dropdown-dashboard-link">Distribuidor</a></li>
+          <li><a href="dashboard-vendedor.html" class="dropdown-dashboard-link">Vendedor</a></li>
+          <li><a href="landing-page.html" class="dropdown-dashboard-link"><i class="fas fa-home me-2"></i>Landing</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main class="main-content">
+        <!-- Dashboard View -->
+        <div id="dashboard-view" class="view-content">
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h1 class="page-title">Administrador</h1>
+                <p class="page-subtitle">Resumen general del sistema Vendelo</p>
+              </div>
+              <div class="d-flex gap-3">
+                <button class="btn btn-outline-primary btn-modern">
+                  <i class="fas fa-bell"></i>
+                  Notificaciones
+                </button>
+                <button class="btn btn-primary btn-modern">
+                  <i class="fas fa-user"></i>
+                  Mi Perfil
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Stats Cards -->
+          <div class="stats-grid">
+            <div class="stats-card primary">
+              <div class="stats-icon primary">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="stats-number">1,247</div>
+              <div class="stats-label">Usuarios Activos</div>
+            </div>
+            <div class="stats-card success">
+              <div class="stats-icon success">
+                <i class="fas fa-dollar-sign"></i>
+              </div>
+              <div class="stats-number">$45,230</div>
+              <div class="stats-label">Ventas del Mes</div>
+            </div>
+            <div class="stats-card warning">
+              <div class="stats-icon warning">
+                <i class="fas fa-box"></i>
+              </div>
+              <div class="stats-number">89</div>
+              <div class="stats-label">Productos</div>
+            </div>
+            <div class="stats-card danger">
+              <div class="stats-icon danger">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <div class="stats-number">12</div>
+              <div class="stats-label">Reclamos Pendientes</div>
+            </div>
+          </div>
+          <!-- Reportes por rango de fechas -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <i class="fas fa-chart-line me-2"></i>
+                Reportes por rango de fechas
+              </div>
+              <div class="d-flex gap-2">
+                <button class="btn btn-success btn-modern">
+                  <i class="fas fa-file-excel"></i>
+                  Excel
+                </button>
+                <button class="btn btn-danger btn-modern">
+                  <i class="fas fa-file-pdf"></i>
+                  PDF
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <form class="row g-4 align-items-end">
+                <div class="col-md-3">
+                  <label for="fechaInicio" class="form-label fw-semibold">Desde</label>
+                  <input type="date" class="form-control" id="fechaInicio">
+                </div>
+                <div class="col-md-3">
+                  <label for="fechaFin" class="form-label fw-semibold">Hasta</label>
+                  <input type="date" class="form-control" id="fechaFin">
+                </div>
+                <div class="col-md-3">
+                  <button type="button" class="btn btn-primary btn-modern w-100">
+                    <i class="fas fa-download"></i>
+                    Generar Reporte
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Usuarios View -->
+        <div id="usuarios-view" class="view-content" style="display: none;">
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h1 class="page-title">Gestión de Usuarios</h1>
+                <p class="page-subtitle">Administra usuarios, vendedores y distribuidores del sistema</p>
+              </div>
+              <div class="d-flex gap-3">
+                <button class="btn btn-outline-primary btn-modern">
+                  <i class="fas fa-bell"></i>
+                  Notificaciones
+                </button>
+                <button class="btn btn-primary btn-modern">
+                  <i class="fas fa-user"></i>
+                  Mi Perfil
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <i class="fas fa-users me-2"></i>
+                Base de Datos de Usuarios
+              </div>
+              <button class="btn btn-primary btn-modern">
+                <i class="fas fa-plus"></i>
+                Nuevo Usuario
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="actions-bar">
+                <div class="search-container">
+                  <i class="fas fa-search search-icon"></i>
+                  <input type="text" class="search-box" placeholder="Buscar usuarios...">
+                </div>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-outline-primary btn-modern">
+                    <i class="fas fa-filter"></i>
+                    Filtros
+                  </button>
+                  <button class="btn btn-success btn-modern">
+                    <i class="fas fa-download"></i>
+                    Exportar
+                  </button>
+                </div>
+              </div>
+              
+              <div class="table-container">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Email</th>
+                      <th>Rol</th>
+                      <th>Estado</th>
+                      <th>Último Acceso</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Juan Pérez</strong></td>
+                      <td>juan@mail.com</td>
+                      <td><span class="badge bg-primary">Usuario</span></td>
+                      <td><span class="badge bg-success">Activo</span></td>
+                      <td>Hoy 14:30</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>María López</strong></td>
+                      <td>maria@mail.com</td>
+                      <td><span class="badge bg-warning">Admin</span></td>
+                      <td><span class="badge bg-success">Activo</span></td>
+                      <td>Ayer 16:45</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Carlos Rodríguez</strong></td>
+                      <td>carlos@mail.com</td>
+                      <td><span class="badge bg-info">Vendedor</span></td>
+                      <td><span class="badge bg-success">Activo</span></td>
+                      <td>Hoy 09:15</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Ana Martínez</strong></td>
+                      <td>ana@mail.com</td>
+                      <td><span class="badge bg-secondary">Cliente</span></td>
+                      <td><span class="badge bg-warning">Pendiente</span></td>
+                      <td>Nunca</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+                </div>
+
+        <!-- Vendedores View -->
+        <div id="vendedores-view" class="view-content" style="display: none;">
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h1 class="page-title">Gestión de Vendedores</h1>
+                <p class="page-subtitle">Administra el equipo de ventas y sus rendimientos</p>
+              </div>
+              <div class="d-flex gap-3">
+                <button class="btn btn-outline-primary btn-modern">
+                  <i class="fas fa-bell"></i>
+                  Notificaciones
+                </button>
+                <button class="btn btn-primary btn-modern">
+                  <i class="fas fa-user"></i>
+                  Mi Perfil
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <i class="fas fa-user-tie me-2"></i>
+                Base de Datos de Vendedores
+              </div>
+              <button class="btn btn-primary btn-modern">
+                <i class="fas fa-plus"></i>
+                Nuevo Vendedor
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="actions-bar">
+                <div class="search-container">
+                  <i class="fas fa-search search-icon"></i>
+                  <input type="text" class="search-box" placeholder="Buscar vendedores...">
+                </div>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-outline-primary btn-modern">
+                    <i class="fas fa-filter"></i>
+                    Filtros
+                  </button>
+                  <button class="btn btn-success btn-modern">
+                    <i class="fas fa-download"></i>
+                    Exportar
+                  </button>
+                </div>
+              </div>
+              
+              <div class="table-container">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Email</th>
+                      <th>Zona</th>
+                      <th>Ventas del Mes</th>
+                      <th>Comisión</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Ana Torres</strong></td>
+                      <td>ana@mail.com</td>
+                      <td><span class="badge bg-info">Centro</span></td>
+                      <td><strong>$12,450</strong></td>
+                      <td>$248</td>
+                      <td><span class="badge bg-success">Activo</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success me-1" title="Ver Reportes">
+                          <i class="fas fa-chart-bar"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Carlos Ruiz</strong></td>
+                      <td>carlos@mail.com</td>
+                      <td><span class="badge bg-info">Norte</span></td>
+                      <td><strong>$8,920</strong></td>
+                      <td>$178</td>
+                      <td><span class="badge bg-success">Activo</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success me-1" title="Ver Reportes">
+                          <i class="fas fa-chart-bar"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Luis Mendoza</strong></td>
+                      <td>luis@mail.com</td>
+                      <td><span class="badge bg-info">Sur</span></td>
+                      <td><strong>$15,230</strong></td>
+                      <td>$304</td>
+                      <td><span class="badge bg-success">Activo</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success me-1" title="Ver Reportes">
+                          <i class="fas fa-chart-bar"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Distribuidores View -->
+        <div id="distribuidores-view" class="view-content" style="display: none;">
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h1 class="page-title">Gestión de Distribuidores</h1>
+                <p class="page-subtitle">Administra la red de distribuidores y sus productos</p>
+              </div>
+              <div class="d-flex gap-3">
+                <button class="btn btn-outline-primary btn-modern">
+                  <i class="fas fa-bell"></i>
+                  Notificaciones
+                </button>
+                <button class="btn btn-primary btn-modern">
+                  <i class="fas fa-user"></i>
+                  Mi Perfil
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <i class="fas fa-truck me-2"></i>
+                Base de Datos de Distribuidores
+              </div>
+              <button class="btn btn-primary btn-modern">
+                <i class="fas fa-plus"></i>
+                Nuevo Distribuidor
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="actions-bar">
+                <div class="search-container">
+                  <i class="fas fa-search search-icon"></i>
+                  <input type="text" class="search-box" placeholder="Buscar distribuidores...">
+                </div>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-outline-primary btn-modern">
+                    <i class="fas fa-filter"></i>
+                    Filtros
+                  </button>
+                  <button class="btn btn-success btn-modern">
+                    <i class="fas fa-download"></i>
+                    Exportar
+                  </button>
+                </div>
+              </div>
+              
+              <div class="table-container">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Contacto</th>
+                      <th>Zona</th>
+                      <th>Productos</th>
+                      <th>Stock Total</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Distribuidora Sur</strong></td>
+                      <td>sur@mail.com</td>
+                      <td><span class="badge bg-success">Sur</span></td>
+                      <td>45 productos</td>
+                      <td><strong>1,200</strong></td>
+                      <td><span class="badge bg-success">Activo</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info me-1" title="Ver Productos">
+                          <i class="fas fa-box"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Distribuidora Oeste</strong></td>
+                      <td>oeste@mail.com</td>
+                      <td><span class="badge bg-warning">Oeste</span></td>
+                      <td>32 productos</td>
+                      <td><strong>850</strong></td>
+                      <td><span class="badge bg-success">Activo</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info me-1" title="Ver Productos">
+                          <i class="fas fa-box"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Distribuidora Norte</strong></td>
+                      <td>norte@mail.com</td>
+                      <td><span class="badge bg-info">Norte</span></td>
+                      <td>28 productos</td>
+                      <td><strong>650</strong></td>
+                      <td><span class="badge bg-warning">Pendiente</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info me-1" title="Ver Productos">
+                          <i class="fas fa-box"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comisiones View -->
+        <div id="comisiones-view" class="view-content" style="display: none;">
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h1 class="page-title">Gestión de Comisiones</h1>
+                <p class="page-subtitle">Controla y calcula comisiones por vendedor y categoría</p>
+              </div>
+              <div class="d-flex gap-3">
+                <button class="btn btn-outline-primary btn-modern">
+                  <i class="fas fa-bell"></i>
+                  Notificaciones
+                </button>
+                <button class="btn btn-primary btn-modern">
+                  <i class="fas fa-user"></i>
+                  Mi Perfil
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <i class="fas fa-percentage me-2"></i>
+                Detalle de Comisiones por Vendedor y Categoría
+              </div>
+              <button class="btn btn-success btn-modern">
+                <i class="fas fa-calculator"></i>
+                Calcular Comisiones
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="actions-bar">
+                <div class="search-container">
+                  <i class="fas fa-search search-icon"></i>
+                  <input type="text" class="search-box" placeholder="Buscar vendedor...">
+                </div>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-outline-primary btn-modern">
+                    <i class="fas fa-filter"></i>
+                    Filtros
+                  </button>
+                  <button class="btn btn-success btn-modern">
+                    <i class="fas fa-download"></i>
+                    Exportar
+                  </button>
+                </div>
+              </div>
+              
+              <div class="table-container">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Vendedor</th>
+                      <th>Categoría</th>
+                      <th>Ventas</th>
+                      <th>Comisión %</th>
+                      <th>Comisión Generada</th>
+                      <th>Período</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Ana Torres</strong></td>
+                      <td><span class="badge bg-primary">Cigarrillos</span></td>
+                      <td><strong>$60,000</strong></td>
+                      <td>2%</td>
+                      <td><strong>$1,200</strong></td>
+                      <td>Enero 2024</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-info me-1" title="Ver Detalle">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success" title="Descargar">
+                          <i class="fas fa-download"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Carlos Ruiz</strong></td>
+                      <td><span class="badge bg-secondary">Otros</span></td>
+                      <td><strong>$20,000</strong></td>
+                      <td>4%</td>
+                      <td><strong>$800</strong></td>
+                      <td>Enero 2024</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-info me-1" title="Ver Detalle">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success" title="Descargar">
+                          <i class="fas fa-download"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Luis Mendoza</strong></td>
+                      <td><span class="badge bg-primary">Cigarrillos</span></td>
+                      <td><strong>$45,000</strong></td>
+                      <td>2%</td>
+                      <td><strong>$900</strong></td>
+                      <td>Enero 2024</td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-info me-1" title="Ver Detalle">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success" title="Descargar">
+                          <i class="fas fa-download"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Productos View -->
+        <div id="productos-view" class="view-content" style="display: none;">
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h1 class="page-title">Gestión de Productos</h1>
+                <p class="page-subtitle">Administra el catálogo Vendelo y productos por distribuidor</p>
+              </div>
+              <div class="d-flex gap-3">
+                <button class="btn btn-outline-primary btn-modern">
+                  <i class="fas fa-bell"></i>
+                  Notificaciones
+                </button>
+                <button class="btn btn-primary btn-modern">
+                  <i class="fas fa-user"></i>
+                  Mi Perfil
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <i class="fas fa-box me-2"></i>
+                Catálogo "VENDELO"
+              </div>
+              <button class="btn btn-primary btn-modern">
+                <i class="fas fa-plus"></i>
+                Nuevo Producto
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="actions-bar">
+                <div class="search-container">
+                  <i class="fas fa-search search-icon"></i>
+                  <input type="text" class="search-box" placeholder="Buscar productos...">
+                </div>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-outline-primary btn-modern">
+                    <i class="fas fa-filter"></i>
+                    Filtros
+                  </button>
+                  <button class="btn btn-success btn-modern">
+                    <i class="fas fa-download"></i>
+                    Exportar
+                  </button>
+                </div>
+              </div>
+              
+              <div class="table-container">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th>Categoría</th>
+                      <th>Precio</th>
+                      <th>Stock</th>
+                      <th>Distribuidor</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Cigarrillos Marlboro</strong></td>
+                      <td><span class="badge bg-primary">Cigarrillos</span></td>
+                      <td><strong>$500</strong></td>
+                      <td><span class="badge bg-success">200</span></td>
+                      <td>Distribuidora Sur</td>
+                      <td><span class="badge bg-success">Activo</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Encendedor</strong></td>
+                      <td><span class="badge bg-secondary">Otros</span></td>
+                      <td><strong>$100</strong></td>
+                      <td><span class="badge bg-warning">15</span></td>
+                      <td>Distribuidora Oeste</td>
+                      <td><span class="badge bg-success">Activo</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>Cigarrillos Camel</strong></td>
+                      <td><span class="badge bg-primary">Cigarrillos</span></td>
+                      <td><strong>$480</strong></td>
+                      <td><span class="badge bg-success">150</span></td>
+                      <td>Distribuidora Sur</td>
+                      <td><span class="badge bg-success">Activo</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Categorías View -->
+        <div id="categorias-view" class="view-content" style="display: none;">
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h1 class="page-title">Gestión de Categorías</h1>
+                <p class="page-subtitle">Administra categorías y sus comisiones asignadas</p>
+              </div>
+              <div class="d-flex gap-3">
+                <button class="btn btn-outline-primary btn-modern">
+                  <i class="fas fa-bell"></i>
+                  Notificaciones
+                </button>
+                <button class="btn btn-primary btn-modern">
+                  <i class="fas fa-user"></i>
+                  Mi Perfil
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <i class="fas fa-tags me-2"></i>
+                Categorías con Comisiones Asignadas
+              </div>
+              <button class="btn btn-primary btn-modern">
+                <i class="fas fa-plus"></i>
+                Nueva Categoría
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="actions-bar">
+                <div class="search-container">
+                  <i class="fas fa-search search-icon"></i>
+                  <input type="text" class="search-box" placeholder="Buscar categorías...">
+                </div>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-outline-primary btn-modern">
+                    <i class="fas fa-filter"></i>
+                    Filtros
+                  </button>
+                  <button class="btn btn-success btn-modern">
+                    <i class="fas fa-download"></i>
+                    Exportar
+                  </button>
+                </div>
+              </div>
+              
+              <div class="table-container">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Categoría</th>
+                      <th>Comisión</th>
+                      <th>Productos</th>
+                      <th>Ventas Totales</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong><span class="badge bg-primary">Cigarrillos</span></strong></td>
+                      <td><strong>2%</strong></td>
+                      <td>15 productos</td>
+                      <td><strong>$125,000</strong></td>
+                      <td><span class="badge bg-success">Activa</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info me-1" title="Ver Productos">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong><span class="badge bg-secondary">Otros</span></strong></td>
+                      <td><strong>4%</strong></td>
+                      <td>8 productos</td>
+                      <td><strong>$45,000</strong></td>
+                      <td><span class="badge bg-success">Activa</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info me-1" title="Ver Productos">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong><span class="badge bg-info">Bebidas</span></strong></td>
+                      <td><strong>3%</strong></td>
+                      <td>12 productos</td>
+                      <td><strong>$78,000</strong></td>
+                      <td><span class="badge bg-success">Activa</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info me-1" title="Ver Productos">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reclamos View -->
+        <div id="reclamos-view" class="view-content" style="display: none;">
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h1 class="page-title">Gestión de Reclamos</h1>
+                <p class="page-subtitle">Administra y resuelve reclamos de clientes</p>
+              </div>
+              <div class="d-flex gap-3">
+                <button class="btn btn-outline-primary btn-modern">
+                  <i class="fas fa-bell"></i>
+                  Notificaciones
+                </button>
+                <button class="btn btn-primary btn-modern">
+                  <i class="fas fa-user"></i>
+                  Mi Perfil
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Sistema de Reclamos
+              </div>
+              <button class="btn btn-primary btn-modern">
+                <i class="fas fa-plus"></i>
+                Nuevo Reclamo
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="actions-bar">
+                <div class="search-container">
+                  <i class="fas fa-search search-icon"></i>
+                  <input type="text" class="search-box" placeholder="Buscar reclamos...">
+                </div>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-warning btn-modern">
+                    <i class="fas fa-filter"></i>
+                    Filtros
+                  </button>
+                  <button class="btn btn-success btn-modern">
+                    <i class="fas fa-download"></i>
+                    Exportar
+                  </button>
+                </div>
+              </div>
+              
+              <div class="table-container">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Usuario</th>
+                      <th>Descripción</th>
+                      <th>Fecha</th>
+                      <th>Prioridad</th>
+                      <th>Estado</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>#001</strong></td>
+                      <td><strong>Juan Pérez</strong></td>
+                      <td>No recibió producto</td>
+                      <td>Hoy 10:30</td>
+                      <td><span class="badge bg-danger">Alta</span></td>
+                      <td><span class="badge bg-warning">Pendiente</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Ver Detalle">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success me-1" title="Resolver">
+                          <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info" title="Comentar">
+                          <i class="fas fa-comment"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>#002</strong></td>
+                      <td><strong>María López</strong></td>
+                      <td>Producto defectuoso</td>
+                      <td>Ayer 15:45</td>
+                      <td><span class="badge bg-warning">Media</span></td>
+                      <td><span class="badge bg-success">Resuelto</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Ver Detalle">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary me-1" title="Archivar">
+                          <i class="fas fa-archive"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info" title="Comentar">
+                          <i class="fas fa-comment"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>#003</strong></td>
+                      <td><strong>Carlos Rodríguez</strong></td>
+                      <td>Problema con envío</td>
+                      <td>Hoy 08:15</td>
+                      <td><span class="badge bg-danger">Alta</span></td>
+                      <td><span class="badge bg-warning">En Proceso</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" title="Ver Detalle">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success me-1" title="Resolver">
+                          <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info" title="Comentar">
+                          <i class="fas fa-comment"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        </main>
+      </div>
+  </div>
+
+  <script>
+    // Navegación entre vistas
+    document.addEventListener('DOMContentLoaded', function() {
+      const navLinks = document.querySelectorAll('.sidebar .nav-link');
+      const viewContents = document.querySelectorAll('.view-content');
+      
+      // Función para cambiar vista
+      function changeView(viewName) {
+        // Ocultar todas las vistas
+        viewContents.forEach(view => {
+          view.style.display = 'none';
+        });
+        
+        // Mostrar la vista seleccionada
+        const targetView = document.getElementById(viewName + '-view');
+        if (targetView) {
+          targetView.style.display = 'block';
+        }
+        
+        // Actualizar clases activas en el sidebar
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+        });
+        
+        // Marcar el enlace actual como activo
+        const activeLink = document.querySelector(`[data-view="${viewName}"]`);
+        if (activeLink) {
+          activeLink.classList.add('active');
+        }
+      }
+      
+      // Event listeners para los enlaces del sidebar
+      navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const viewName = this.getAttribute('data-view');
+          changeView(viewName);
+        });
+      });
+      
+      // Mostrar dashboard por defecto
+      changeView('dashboard');
+
+      // Dashboards desplegable
+      const dashboardsToggle = document.querySelector('.dashboards-toggle');
+      const dashboardsList = document.querySelector('.dashboards-list');
+      dashboardsToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dashboardsList.classList.toggle('open');
+      });
+      document.addEventListener('click', function(e) {
+        dashboardsList.classList.remove('open');
+      });
+      dashboardsList.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    });
+  </script>
+</body>
+</html> 
